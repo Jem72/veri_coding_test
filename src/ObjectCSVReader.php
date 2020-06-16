@@ -23,6 +23,15 @@ class ObjectCSVReader extends CSVReader
 		return $this->objectFields;
 	}
 
+	public function getItem(int $index)
+	{
+		$response = null;
+		if($index < count($this->objectData))
+		{
+			return $this->objectData[$index];
+		}
+	}
+
 	protected function parseFile(String $fileName)
 	{
 		$this->objectData = array();
@@ -52,7 +61,7 @@ class ObjectCSVReader extends CSVReader
 		$parsedItem = null;
 		if((null != $fileItem) && (true === is_array($fileItem)))
 		{
-			$parsedItem = new stdClass();
+			$parsedItem = array();
 			$columnCount = count($fileItem);
 			$fieldCount = count($this->objectFields);
 
@@ -60,7 +69,7 @@ class ObjectCSVReader extends CSVReader
 			{
 				foreach($this->objectFields as $index => $objectField)
 				{
-					$parsedItem->$objectField = $fileItem[$index];
+					$parsedItem[$objectField] = $fileItem[$index];
 				}
 			}
 			else

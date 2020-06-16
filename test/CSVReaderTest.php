@@ -39,7 +39,6 @@ class CSVReaderTest extends TestCase
 	{
 		$attendanceLoaded = $this->attendanceReader->isFileLoaded();
 		$workplaceLoaded = $this->workplaceReader->isFileLoaded();
-		echo("Loaded\n");
 		$this->assertEquals(true, $attendanceLoaded, "Attendance File not opened");
 		$this->assertEquals(true, $workplaceLoaded, "Workplace File not opened");
 	}

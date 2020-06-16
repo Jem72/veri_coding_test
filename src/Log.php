@@ -36,6 +36,11 @@ class Log
 		$this->saveMessage('INFO', $message);
 	}
 
+	public function warning(string $message): void
+	{
+		$this->saveMessage('WARNING', $message);
+	}
+
 	public function error(string $message): void
 	{
 		$this->saveMessage('ERROR', $message);
