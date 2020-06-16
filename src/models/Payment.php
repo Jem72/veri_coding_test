@@ -101,11 +101,13 @@ class Payment
 	public function getTravelRate()
 	{
 		$rate = self::RATE_ZERO;
-		if($this->distance >= self::MIN_TRAVEL_DISTANCE)
+		if('AT' === $this->status)
 		{
-			$rate = ($this->distance * 2) * self::RATE_TRAVEL;
+			if($this->distance >= self::MIN_TRAVEL_DISTANCE)
+			{
+				$rate = ($this->distance * 2) * self::RATE_TRAVEL;
+			}
 		}
-
 		return $rate;
 	}
 }
