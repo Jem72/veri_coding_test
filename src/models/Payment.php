@@ -108,6 +108,13 @@ class Payment
 				$rate = ($this->distance * 2) * self::RATE_TRAVEL;
 			}
 		}
-		return $rate;
+		return round($rate,2);
+	}
+
+	public function getTotal()
+	{
+		$total = $this->getBasicRate() + $this->getMealRate() + $this->getTravelRate() + $this->getFuelRate();
+
+		return $total;
 	}
 }

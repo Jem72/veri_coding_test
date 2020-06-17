@@ -12,6 +12,7 @@ class ObjectCSVReader extends CSVReader
 {
 	private $objectFields = null;
 	private $objectData = array();
+	private $valid = false;
 
 	public function __construct(String $fileName)
 	{
@@ -23,13 +24,25 @@ class ObjectCSVReader extends CSVReader
 		return $this->objectFields;
 	}
 
-	public function getItem(int $index)
+	/**
+	 * @param int $index
+	 * @return array
+	 */
+	public function getItem(int $index): array
 	{
 		$response = null;
 		if($index < count($this->objectData))
 		{
 			return $this->objectData[$index];
 		}
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function isValid(): bool
+	{
+		return $this->valid;
 	}
 
 	protected function parseFile(String $fileName)
@@ -52,11 +65,20 @@ class ObjectCSVReader extends CSVReader
 					$this->objectData[] = $object;
 				}
 			}
+
+			if(count($this->objectData) > 0)
+			{
+				$this->valid = true;
+			}
 		}
 	}
 
 
-	private function parseItem($fileItem)
+	/**
+	 * @param $fileItem
+	 * @return array|null
+	 */
+	private function parseItem($fileItem): ?array
 	{
 		$parsedItem = null;
 		if((null != $fileItem) && (true === is_array($fileItem)))

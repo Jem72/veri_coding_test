@@ -30,6 +30,16 @@ abstract class GenericRecord
 	protected $valid = true;
 
 
+	public function getID(): int
+	{
+		return $this->id;
+	}
+
+	public function getName(): string
+	{
+		return $this->name;
+	}
+
 	public function isValid()
 	{
 		return $this->valid;
@@ -53,12 +63,13 @@ abstract class GenericRecord
 	protected function verifyComplete(array $arrayData, array $source_keys)
 	{
 		$complete = true;
-
+		$missingKey = null;
 		foreach($source_keys as $key)
 		{
 			if(FALSE === array_key_exists($key, $arrayData))
 			{
 				$complete = false;
+				$missingKey = $key;
 				break;
 			}
 		}
@@ -66,7 +77,7 @@ abstract class GenericRecord
 		$this->valid = $complete;
 		if(false == $complete)
 		{
-			$this->failRecord(self::MESSAGE_MISSING_DATA);
+			$this->failRecord(self::MESSAGE_MISSING_DATA . ': ' . $missingKey);
 		}
 		return $complete;
 	}

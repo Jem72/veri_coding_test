@@ -7,6 +7,7 @@
  */
 
 include_once(dirname(__FILE__) . '/GenericRecord.php');
+include_once(dirname(__FILE__) . '/Payment.php');
 
 
 /**
@@ -32,6 +33,8 @@ class AttendanceRecord extends GenericRecord
 	protected $dob;
 	protected $workplace_id;
 	protected $status;
+
+	protected $payment_value = 0;
 
 	public function __construct($arrayData)
 	{
@@ -96,5 +99,29 @@ class AttendanceRecord extends GenericRecord
 		}
 
 		return $age;
+	}
+
+	/**
+	 * Gets the workplace ID for the record
+	 * @return int
+	 */
+	public function getWorkplaceID(): int
+	{
+		return $this->workplace_id;
+	}
+
+	public function getStatus()
+	{
+		return $this->status;
+	}
+
+	public function setPaymentValue(float $value)
+	{
+		$this->payment_value = $value;
+	}
+
+	public function getPaymentValue(): float
+	{
+		return round($this->payment_value, 2);
 	}
 }
