@@ -6,7 +6,8 @@
  * Time: 10:38
  */
 
-include_once __DIR__ . '/CSVReader.php';
+/** @noinspection PhpIncludeInspection */
+include_once(dirname(__FILE__) . '/CSVReader.php');
 
 class ObjectCSVReader extends CSVReader
 {
@@ -28,13 +29,14 @@ class ObjectCSVReader extends CSVReader
 	 * @param int $index
 	 * @return array
 	 */
-	public function getItem(int $index): array
+	public function getItem(int $index): ?array
 	{
 		$response = null;
 		if($index < count($this->objectData))
 		{
-			return $this->objectData[$index];
+			$response = $this->objectData[$index];
 		}
+		return $response;
 	}
 
 	/**

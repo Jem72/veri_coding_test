@@ -5,7 +5,7 @@
  * Date: 2020-06-15
  * Time: 19:07
  */
-include_once __DIR__ . '/Log.php';
+include_once(dirname(__FILE__) . '/Log.php');
 
 /**
  * Reads a simple CSV file
@@ -73,7 +73,7 @@ class CSVReader
 
 		if(false == $this->isFileLoaded())
 		{
-			Log::error("No file loaded");
+			Log::get_instance()->error("No file loaded");
 		}
 		else
 		{

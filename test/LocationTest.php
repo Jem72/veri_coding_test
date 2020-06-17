@@ -7,12 +7,13 @@
  */
 
 use PHPUnit\Framework\TestCase;
+/** @noinspection PhpIncludeInspection */
 include_once(dirname(__FILE__, 2) . '/src/models/Location.php');
+
 class LocationTest extends TestCase
 {
 	function testValidString(): void
 	{
-		$path = dirname(__FILE__, 2) . '/src/models/Location.php';
 		$location = new Location("(2, 42)");
 		$this->assertEquals(true, $location->isValid(), "Valid Location Decoded");
 		$this->assertSame(2, $location->x, 'Valid X decoded');

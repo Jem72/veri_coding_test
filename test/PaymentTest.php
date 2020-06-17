@@ -73,8 +73,8 @@ class PaymentTest extends TestCase
 		$distance2 = 4.9999;
 		$distance3 = 5.0;
 		$distance4 = 5.1;
-		$travelPayment3 = $distance3 * Payment::RATE_TRAVEL * 2;
-		$travelPayment4 = $distance4 * Payment::RATE_TRAVEL * 2;
+		$travelPayment3 = round($distance3 * Payment::RATE_TRAVEL * 2,2);
+		$travelPayment4 = round($distance4 * Payment::RATE_TRAVEL * 2,2);
 		$payment1 = new Payment(43, 'AT', $distance1);
 		$payment2 = new Payment(43, 'AT', $distance2);
 		$payment3 = new Payment(43, 'AT', $distance3);

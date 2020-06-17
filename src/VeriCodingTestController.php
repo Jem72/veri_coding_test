@@ -5,10 +5,16 @@
  * Date: 2020-06-16
  * Time: 11:39
  */
-include_once "ObjectCSVReader.php";
-include_once "models/Location.php";
-include_once "models/AttendanceRecord.php";
-include_once "models/WorkplaceRecord.php";
+
+
+/** @noinspection PhpIncludeInspection */
+include_once(dirname(__FILE__, 1) . '/ObjectCSVReader.php');
+/** @noinspection PhpIncludeInspection */
+include_once(dirname(__FILE__, 1) . '/models/Location.php');
+/** @noinspection PhpIncludeInspection */
+include_once(dirname(__FILE__, 1) . '/models/AttendanceRecord.php');
+/** @noinspection PhpIncludeInspection */
+include_once(dirname(__FILE__, 1) . '/models/WorkplaceRecord.php');
 
 /**
  * Class VeriCodingTestController
@@ -41,10 +47,13 @@ class VeriCodingTestController
 			for($index = 0; $index < $count; $index++)
 			{
 				$item = $reader->getItem($index);
-				$object = new AttendanceRecord($item);
-				if(true == $object->isValid())
+				if(null != $item)
 				{
-					$this->attendanceData[] = $object;
+					$object = new AttendanceRecord($item);
+					if(true == $object->isValid())
+					{
+						$this->attendanceData[] = $object;
+					}
 				}
 			}
 		}
@@ -67,10 +76,13 @@ class VeriCodingTestController
 			for($index = 0; $index < $count; $index++)
 			{
 				$item = $reader->getItem($index);
-				$object = new WorkplaceRecord($item);
-				if(true == $object->isValid())
+				if(null != $item)
 				{
-					$this->workplaceData[] = $object;
+					$object = new WorkplaceRecord($item);
+					if(true == $object->isValid())
+					{
+						$this->workplaceData[] = $object;
+					}
 				}
 			}
 		}
@@ -131,19 +143,12 @@ class VeriCodingTestController
 				}
 			}
 
-			$records = $this->getAttendancesForID(1);
-
-			foreach($records as $record)
+			ksort($consolidatedData);
+			printf("id,payout\n");
+			foreach($consolidatedData as $datum)
 			{
-				$location = $record->getLocation();
-				printf("%d,%d,%s,%s,%d,%d,%.02f\n", $record->getID(), $record->getWorkplaceID(), $record->getName(), $record->getStatus(), $location->x, $location->y, $record->getPaymentValue());
+				printf("%d, %.02f\n", $datum['id'], $datum['payment']);
 			}
-//			ksort($consolidatedData);
-//			printf("id,payout\n");
-//			foreach($consolidatedData as $datum)
-//			{
-//				printf("%d, %.02f\n", $datum['id'], $datum['payment']);
-//			}
 		}
 	}
 
@@ -160,24 +165,6 @@ class VeriCodingTestController
 			}
 		}
 		return $match;
-	}
-
-	/**
-	 * @param int $id
-	 * @return AttendanceRecord[]
-	 */
-	private function getAttendancesForID(int $id): array
-	{
-		$matches = array();
-
-		foreach($this->attendanceData as $attendance)
-		{
-			if($attendance->getID() === $id)
-			{
-				$matches[] = $attendance;
-			}
-		}
-		return $matches;
 	}
 
 	private function processAttendanceRecord(AttendanceRecord $attendance)

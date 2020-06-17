@@ -13,6 +13,10 @@ class Location
 
 	private $valid;
 
+	/**
+	 * Location constructor.
+	 * @param $data: Uses data in form (x, y) to create the location object
+	 */
 	public function __construct($data)
 	{
 		$this->valid = false;
@@ -34,6 +38,10 @@ class Location
 		}
 	}
 
+	/**
+	 * Could we decode a valid location from the supplied data
+	 * @return bool
+	 */
 	public function isValid()
 	{
 		return $this->valid;

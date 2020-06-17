@@ -8,7 +8,8 @@
 
 use PHPUnit\Framework\TestCase;
 
-include_once __DIR__ . '/../src/ObjectCSVReader.php';
+/** @noinspection PhpIncludeInspection */
+include_once(dirname(__FILE__, 2) . '/src/ObjectCSVReader.php');
 
 /**
  * @property ObjectCSVReader $attendanceReader

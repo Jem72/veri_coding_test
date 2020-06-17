@@ -8,8 +8,11 @@
 
 use PHPUnit\Framework\TestCase;
 
+/** @noinspection PhpIncludeInspection */
 include_once(dirname(__FILE__, 2) . '/src/models/WorkplaceRecord.php');
+/** @noinspection PhpIncludeInspection */
 include_once(dirname(__FILE__, 2) . '/src/models/Location.php');
+/** @noinspection PhpIncludeInspection */
 include_once(dirname(__FILE__, 2) . '/src/Log.php');
 
 Log::get_instance()->disable();
@@ -34,7 +37,7 @@ class WorkplaceRecordTest extends TestCase
 		$failure_message = $record->getFailureMessage();
 
 		$this->assertEquals(false, $record->isValid(), 'Record should hae been invalid');
-		$this->assertEquals(WorkplaceRecord::MESSAGE_MISSING_DATA, $failure_message, 'Wrong detection of missing data');
+		$this->assertStringContainsString(WorkplaceRecord::MESSAGE_MISSING_DATA, $failure_message, 'Wrong detection of missing data');
 	}
 
 	public function testBadID(): void

@@ -24,7 +24,6 @@ include_once(dirname(__FILE__) . '/Payment.php');
 class AttendanceRecord extends GenericRecord
 {
 	private static $source_keys = array('id', 'name', 'location', 'dob', 'workplace_id', 'status');
-	private static $valid_status = array('AT', 'AL', 'CSL', 'USL');
 
 	const MESSAGE_INVALID_DOB = "Invalid DOB value for record";
 	const MESSAGE_INVALID_WORKPLACE_ID = "Invalid Workplace ID value for record";
@@ -72,7 +71,7 @@ class AttendanceRecord extends GenericRecord
 			$this->failRecord(self::MESSAGE_INVALID_DOB);
 		}
 
-		if((null == $this->status) || (false === array_search($this->status, self::$valid_status)))
+		if((null == $this->status) || (false === array_search($this->status, Payment::$valid_status)))
 		{
 			$this->failRecord(self::MESSAGE_INVALID_STATUS);
 		}

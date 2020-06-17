@@ -6,6 +6,7 @@
  * Time: 14:31
  */
 
+/** @noinspection PhpIncludeInspection */
 include_once(dirname(__FILE__) . '/Location.php');
 
 /**
@@ -117,11 +118,12 @@ abstract class GenericRecord
 	{
 		$distance = 0.0;
 
-		$distance_x = $this->location->x - $location->x;
-		$distance_y = $this->location->y - $location->y;
-
-		$distance = sqrt(pow($distance_x, 2) + pow($distance_y, 2));
-
+		if(($this->location->isValid()) && ($location->isValid()))
+		{
+			$distance_x = $this->location->x - $location->x;
+			$distance_y = $this->location->y - $location->y;
+			$distance = sqrt(pow($distance_x, 2) + pow($distance_y, 2));
+		}
 		return $distance;
 	}
 

@@ -6,6 +6,7 @@
  * Time: 11:43
  */
 
+/** @noinspection PhpIncludeInspection */
 include_once(dirname(__FILE__) . '/Location.php');
 
 

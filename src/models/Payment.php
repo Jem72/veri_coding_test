@@ -12,10 +12,11 @@
  * @property int    age   - Age of the person claiming the payment
  * @property string status - Status of the day for the payment
  * @property float  distance - distance travelled
- * "
  */
 class Payment
 {
+	public static $valid_status = array('AT', 'AL', 'CSL', 'USL');
+
 	const RATE_BASIC_4 = 90.5;
 	const RATE_BASIC_3 = 85.9;
 	const RATE_BASIC_2 = 81.0;
@@ -27,10 +28,20 @@ class Payment
 
 	const MIN_TRAVEL_DISTANCE = 5.0;
 	const RATE_ZERO = 0.0;
+	const MIN_AGE_BASIC_4 = 26;
+	const MIN_AGE_BASIC_3 = 25;
+	const MIN_AGE_BASIC_2 = 18;
+
 	private $age;
 	private $status;
 	private $distance;
 
+	/**
+	 * Payment constructor.
+	 * @param int    $age
+	 * @param string $status
+	 * @param float  $distance
+	 */
 	public function __construct(int $age, string $status, float $distance)
 	{
 		$this->setAge($age);
@@ -38,16 +49,32 @@ class Payment
 		$this->setDistance($distance);
 	}
 
-	public function setAge(int $age)
+	/**
+	 * Set the age of the person receiving the payment
+	 * @param int $age
+	 */
+	private function setAge(int $age)
 	{
 		$this->age = $age;
 	}
 
+	/**
+	 * Set the status of the payment record
+	 * @param string $status
+	 */
 	private function setStatus(string $status)
 	{
 		$this->status = $status;
+		if(false === array_search($status, self::$valid_status))
+		{
+			Log::get_instance()->warning("Payment called with invalid status: " . $status);
+		}
 	}
 
+	/**
+	 * Set the distance between home and work for the record
+	 * @param float $distance
+	 */
 	private function setDistance(float $distance)
 	{
 		$this->distance = $distance;
@@ -60,15 +87,15 @@ class Payment
 
 		if(false !== array_search($this->status, array('AT', 'AL', 'CSL')))
 		{
-			if($this->age >= 26)
+			if($this->age >= self::MIN_AGE_BASIC_4)
 			{
 				$rate = self::RATE_BASIC_4;
 			}
-			elseif($this->age >= 25)
+			elseif($this->age >= self::MIN_AGE_BASIC_3)
 			{
 				$rate = self::RATE_BASIC_3;
 			}
-			elseif($this->age >= 18)
+			elseif($this->age >= self::MIN_AGE_BASIC_2)
 			{
 				$rate = self::RATE_BASIC_2;
 			}
@@ -108,7 +135,7 @@ class Payment
 				$rate = ($this->distance * 2) * self::RATE_TRAVEL;
 			}
 		}
-		return round($rate,2);
+		return round($rate, 2);
 	}
 
 	public function getTotal()
