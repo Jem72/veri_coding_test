@@ -17,22 +17,28 @@ class Location
 	 * Location constructor.
 	 * @param $data: Uses data in form (x, y) to create the location object
 	 */
-	public function __construct($data)
+	public function __construct(?string $data)
 	{
 		$this->valid = false;
-		$length = strlen($data);
-		if('(' == ($data[0]) && (')' == $data[$length - 1]))
+		if(null != $data)
 		{
-			$trimmed = trim($data, '()');
-			$parts = explode(',', $trimmed);
-
-			if(2 == count($parts))
+			$length = strlen($data);
+			if($length > 0)
 			{
-				if((true == is_numeric($parts[0])) && (true == is_numeric($parts[1])))
+				if('(' == ($data[0]) && (')' == $data[$length - 1]))
 				{
-					$this->valid = true;
-					$this->x = (int)$parts[0];
-					$this->y = (int)$parts[1];
+					$trimmed = trim($data, '()');
+					$parts = explode(',', $trimmed);
+
+					if(2 == count($parts))
+					{
+						if((true == is_numeric($parts[0])) && (true == is_numeric($parts[1])))
+						{
+							$this->valid = true;
+							$this->x = (int)$parts[0];
+							$this->y = (int)$parts[1];
+						}
+					}
 				}
 			}
 		}

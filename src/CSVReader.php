@@ -23,6 +23,10 @@ class CSVReader
 		$this->parseFile($fileName);
 	}
 
+	/**
+	 * Parses the CSV file text and places it in an array of arrays
+	 * @param String $fileName
+	 */
 	protected function parseFile(String $fileName)
 	{
 		$this->fileLoaded = false;
@@ -38,7 +42,9 @@ class CSVReader
 		{
 			Log::get_instance()->info("Opened CSV File " . $fileName);
 			$this->fileLoaded = true;
-			while(false != ($line = @fgetcsv($file)))
+
+			// Use fgetcsv to read each line of data into an array
+			while(false !== ($line = @fgetcsv($file)))
 			{
 				if(true == is_array($line))
 				{
@@ -58,15 +64,28 @@ class CSVReader
 		}
 	}
 
+	/**
+	 * Did we manage to load a file
+	 * @return bool
+	 */
 	public function isFileLoaded()
 	{
 		return $this->fileLoaded;
 	}
 
-	public function getItemCount(): int {
+	/**
+	 * Get the number of items in the file
+	 * @return int
+	 */
+	public function getItemCount(): int
+	{
 		return $this->getLineCount();
 	}
 
+	/**
+	 * Get the number of lines in the file - equal here
+	 * @return int
+	 */
 	public function getLineCount(): int
 	{
 		$itemCount = 0;

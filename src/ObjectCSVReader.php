@@ -9,6 +9,14 @@
 /** @noinspection PhpIncludeInspection */
 include_once(dirname(__FILE__) . '/CSVReader.php');
 
+/**
+ * Reads a CSV File with field names in the first line. Uses the base CSV reader to read the raw data and then parses
+ * each line into a key-value array describing the item.
+ *
+ * @property array $objectFields - the field names
+ * @property array $objectData - array of key-value arrays containing data
+ * @property bool $valid - is the data valid
+ */
 class ObjectCSVReader extends CSVReader
 {
 	private $objectFields = null;
@@ -26,6 +34,7 @@ class ObjectCSVReader extends CSVReader
 	}
 
 	/**
+	 * Gets an item by its index
 	 * @param int $index
 	 * @return array
 	 */
@@ -40,6 +49,7 @@ class ObjectCSVReader extends CSVReader
 	}
 
 	/**
+	 * Is the data file valid. At present it is not valid if there are no data in the file
 	 * @return bool
 	 */
 	public function isValid(): bool
@@ -47,6 +57,10 @@ class ObjectCSVReader extends CSVReader
 		return $this->valid;
 	}
 
+	/**
+	 * Parses the file data as described
+	 * @param String $fileName
+	 */
 	protected function parseFile(String $fileName)
 	{
 		$this->objectData = array();
@@ -77,6 +91,7 @@ class ObjectCSVReader extends CSVReader
 
 
 	/**
+	 * Parses a single item in the file. We assume that each record has the correct number of columns
 	 * @param $fileItem
 	 * @return array|null
 	 */

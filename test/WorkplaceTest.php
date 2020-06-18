@@ -9,7 +9,7 @@
 use PHPUnit\Framework\TestCase;
 
 /** @noinspection PhpIncludeInspection */
-include_once(dirname(__FILE__, 2) . '/src/models/WorkplaceRecord.php');
+include_once(dirname(__FILE__, 2) . '/src/models/Workplace.php');
 /** @noinspection PhpIncludeInspection */
 include_once(dirname(__FILE__, 2) . '/src/models/Location.php');
 /** @noinspection PhpIncludeInspection */
@@ -17,14 +17,14 @@ include_once(dirname(__FILE__, 2) . '/src/Log.php');
 
 Log::get_instance()->disable();
 
-class WorkplaceRecordTest extends TestCase
+class WorkplaceTest extends TestCase
 {
 	private $standardData = array('id' => '10', 'name' => 'Walker, Johnson and Knight', 'location' => '(22, 23)');
 
 	public function testValidRecord(): void
 	{
 		$testData = $this->standardData;
-		$record = new WorkplaceRecord($testData);
+		$record = new Workplace($testData);
 
 		$this->assertEquals(true, $record->isValid(), 'Invalid Workplace: ' . $record->getFailureMessage());
 	}
@@ -33,50 +33,50 @@ class WorkplaceRecordTest extends TestCase
 	{
 		$testData = $this->standardData;
 		unset($testData['id']);
-		$record = new WorkplaceRecord($testData);
+		$record = new Workplace($testData);
 		$failure_message = $record->getFailureMessage();
 
 		$this->assertEquals(false, $record->isValid(), 'Record should hae been invalid');
-		$this->assertStringContainsString(WorkplaceRecord::MESSAGE_MISSING_DATA, $failure_message, 'Wrong detection of missing data');
+		$this->assertStringContainsString(Workplace::MESSAGE_MISSING_DATA, $failure_message, 'Wrong detection of missing data');
 	}
 
 	public function testBadID(): void
 	{
 		$testData = $this->standardData;
 		$testData['id'] = '-1';
-		$record = new WorkplaceRecord($testData);
+		$record = new Workplace($testData);
 		$failure_message = $record->getFailureMessage();
 
 		$this->assertEquals(false, $record->isValid(), 'Record should hae been invalid');
-		$this->assertEquals(WorkplaceRecord::MESSAGE_INVALID_ID, $failure_message, 'Wrong detection of bad ID');
+		$this->assertEquals(Workplace::MESSAGE_INVALID_ID, $failure_message, 'Wrong detection of bad ID');
 	}
 
 	public function testBadName(): void
 	{
 		$testData = $this->standardData;
 		$testData['name'] = null;
-		$record = new WorkplaceRecord($testData);
+		$record = new Workplace($testData);
 		$failure_message = $record->getFailureMessage();
 
 		$this->assertEquals(false, $record->isValid(), 'Record should hae been invalid');
-		$this->assertEquals(WorkplaceRecord::MESSAGE_INVALID_NAME, $failure_message, 'Wrong detection of bad name');
+		$this->assertEquals(Workplace::MESSAGE_INVALID_NAME, $failure_message, 'Wrong detection of bad name');
 	}
 
 	public function testBadLocation(): void
 	{
 		$testData = $this->standardData;
 		$testData['location'] = 'Longford';
-		$record = new WorkplaceRecord($testData);
+		$record = new Workplace($testData);
 		$failure_message = $record->getFailureMessage();
 
 		$this->assertEquals(false, $record->isValid(), 'Record should hae been invalid');
-		$this->assertEquals(WorkplaceRecord::MESSAGE_INVALID_LOCATION, $failure_message, 'Wrong detection of bad location');
+		$this->assertEquals(Workplace::MESSAGE_INVALID_LOCATION, $failure_message, 'Wrong detection of bad location');
 	}
 
 	public function testDistanceTo()
 	{
 		$testData = $this->standardData;
-		$record = new WorkplaceRecord($testData);
+		$record = new Workplace($testData);
 		$secondLocation = $record->getLocation();
 		$distance = $record->distanceTo($secondLocation);
 		$both_offset = clone $secondLocation;

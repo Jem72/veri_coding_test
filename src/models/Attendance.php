@@ -6,22 +6,20 @@
  * Time: 11:43
  */
 
-include_once(dirname(__FILE__) . '/GenericRecord.php');
+include_once(dirname(__FILE__) . '/Generic.php');
 include_once(dirname(__FILE__) . '/Payment.php');
 
 
 /**
- * Class AttendanceRecord - stores a single attendance record
+ * Class Attendance - stores a single attendance record
  *
- * @property int      $id: The ID of the record
- * @property string   $name: The name of the record
- * @property Location $location: The location of the record
  * @property DateTime $dob: The DOB for the record
  * @property int      $workplace_id: Reference to the workplace for the record
  * @property string   $status: The status for the record
+ * @property float    $paymentValue: The value of the payment for the record
  *
  */
-class AttendanceRecord extends GenericRecord
+class Attendance extends Generic
 {
 	private static $source_keys = array('id', 'name', 'location', 'dob', 'workplace_id', 'status');
 
@@ -33,10 +31,11 @@ class AttendanceRecord extends GenericRecord
 	protected $workplace_id;
 	protected $status;
 
-	protected $payment_value = 0;
+	protected $paymentValue = 0;
 
 	public function __construct($arrayData)
 	{
+		parent::__construct();
 		$complete = $this->verifyComplete($arrayData, self::$source_keys);
 
 		if(true == $complete)
@@ -114,13 +113,21 @@ class AttendanceRecord extends GenericRecord
 		return $this->status;
 	}
 
+	/**
+	 * There should really be a proper currency type but float is sufficient for the scope of this project
+	 * @param float $value
+	 */
 	public function setPaymentValue(float $value)
 	{
-		$this->payment_value = $value;
+		$this->paymentValue = $value;
 	}
 
+	/**
+	 * We round the payment value to the nearest penny - There is an assu,
+	 * @return float
+	 */
 	public function getPaymentValue(): float
 	{
-		return round($this->payment_value, 2);
+		return round($this->paymentValue, 2);
 	}
 }

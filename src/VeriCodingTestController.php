@@ -12,15 +12,15 @@ include_once(dirname(__FILE__, 1) . '/ObjectCSVReader.php');
 /** @noinspection PhpIncludeInspection */
 include_once(dirname(__FILE__, 1) . '/models/Location.php');
 /** @noinspection PhpIncludeInspection */
-include_once(dirname(__FILE__, 1) . '/models/AttendanceRecord.php');
+include_once(dirname(__FILE__, 1) . '/models/Attendance.php');
 /** @noinspection PhpIncludeInspection */
-include_once(dirname(__FILE__, 1) . '/models/WorkplaceRecord.php');
+include_once(dirname(__FILE__, 1) . '/models/Workplace.php');
 
 /**
  * Class VeriCodingTestController
  *
- * @property WorkplaceRecord[]  $workplaceData
- * @property AttendanceRecord[] $attendanceData
+ * @property Workplace[]  $workplaceData
+ * @property Attendance[] $attendanceData
  */
 class VeriCodingTestController
 {
@@ -49,7 +49,7 @@ class VeriCodingTestController
 				$item = $reader->getItem($index);
 				if(null != $item)
 				{
-					$object = new AttendanceRecord($item);
+					$object = new Attendance($item);
 					if(true == $object->isValid())
 					{
 						$this->attendanceData[] = $object;
@@ -78,7 +78,7 @@ class VeriCodingTestController
 				$item = $reader->getItem($index);
 				if(null != $item)
 				{
-					$object = new WorkplaceRecord($item);
+					$object = new Workplace($item);
 					if(true == $object->isValid())
 					{
 						$this->workplaceData[] = $object;
@@ -167,7 +167,7 @@ class VeriCodingTestController
 		return $match;
 	}
 
-	private function processAttendanceRecord(AttendanceRecord $attendance)
+	private function processAttendanceRecord(Attendance $attendance)
 	{
 		$workplaceID = $attendance->getWorkplaceID();
 		$workplace = $this->getWorkplaceForID($workplaceID);

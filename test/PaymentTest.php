@@ -53,6 +53,20 @@ class PaymentTest extends TestCase
 		$this->assertEquals(Payment::RATE_ZERO, $payment4->getMealRate(), 'Check Annual Leave meal rate');
 	}
 
+
+	function testAttendingFuelPayments(): void
+	{
+		$payment1 = new Payment(43, 'AT', 0);
+		$payment2 = new Payment(43, 'CSL', 0);
+		$payment3 = new Payment(43, 'USL', 0);
+		$payment4 = new Payment(43, 'AL', 0);
+		$this->assertEquals(Payment::RATE_FUEL, $payment1->getFuelRate(), 'Check attending fuel rate');
+		$this->assertEquals(Payment::RATE_ZERO, $payment2->getFuelRate(), 'Check CSL fuel rate');
+		$this->assertEquals(Payment::RATE_ZERO, $payment3->getFuelRate(), 'Check USL fuel rate');
+		$this->assertEquals(Payment::RATE_ZERO, $payment4->getFuelRate(), 'Check Annual Leave fuel rate');
+	}
+
+
 	function testAttendingTravelPayments(): void
 	{
 		$distance = 10.0;

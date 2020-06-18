@@ -81,6 +81,11 @@ class Payment
 	}
 
 
+	/**
+	 * Get the basic payment for the date. Depends on the person's age and is only paid for days where the person is
+	 * attending, on annual leave or on certified sick leave
+	 * @return float
+	 */
 	public function getBasicRate(): float
 	{
 		$rate = self::RATE_ZERO;
@@ -108,6 +113,10 @@ class Payment
 		return $rate;
 	}
 
+	/**
+	 * Get the person's meal rate - only paid on days where the person is attending
+	 * @return float
+	 */
 	public function getMealRate()
 	{
 		$rate = self::RATE_ZERO;
@@ -120,11 +129,27 @@ class Payment
 		return $rate;
 	}
 
+	/**
+	 * Get the person's fuel rate - unclear from spec but it seems reasonable to only pay it when attending
+	 * TODO: Get clarity on the circumstances in which this paid
+	 * @return float
+	 */
 	public function getFuelRate()
 	{
-		return self::RATE_FUEL;
+		$rate = self::RATE_ZERO;
+
+		if('AT' === $this->status)
+		{
+			$rate = self::RATE_FUEL;
+		}
+		return $rate;
 	}
 
+	/**
+	 * Get the person's travel rate. This is only paid when the person is attending and if they had to travel more than
+	 * 5 km from home.
+	 * @return float
+	 */
 	public function getTravelRate()
 	{
 		$rate = self::RATE_ZERO;
@@ -138,6 +163,10 @@ class Payment
 		return round($rate, 2);
 	}
 
+	/**
+	 * Get the user's total payment
+	 * @return float
+	 */
 	public function getTotal()
 	{
 		$total = $this->getBasicRate() + $this->getMealRate() + $this->getTravelRate() + $this->getFuelRate();

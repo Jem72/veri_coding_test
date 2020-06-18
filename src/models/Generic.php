@@ -17,7 +17,7 @@ include_once(dirname(__FILE__) . '/Location.php');
  * @property string   $name Text Name for the record
  * @property Location $location Location for the record
  */
-abstract class GenericRecord
+abstract class Generic
 {
 	const MESSAGE_MISSING_DATA = 'Data is missing from record';
 	const MESSAGE_INVALID_ID = "Invalid ID value for record";
@@ -25,11 +25,15 @@ abstract class GenericRecord
 	const MESSAGE_INVALID_LOCATION = "Invalid Location value for record";
 
 	protected $failureMessage;
-	protected $id;
-	protected $name;
+	protected $id = 0;
+	protected $name = "";
 	protected $location;
 	protected $valid = true;
 
+	public function __construct()
+	{
+		$this->location = new Location("");
+	}
 
 	public function getID(): int
 	{
@@ -56,11 +60,21 @@ abstract class GenericRecord
 		}
 	}
 
-	public function getFailureMessage()
+	/**
+	 * Is there is an error in processing the record, this is a text message for loggin
+	 * @return string|null
+	 */
+	public function getFailureMessage(): ?string
 	{
 		return $this->failureMessage;
 	}
 
+	/**
+	 * Verifies that the data for the record is complete. For now, all records must contain all data
+	 * @param array $arrayData
+	 * @param array $source_keys
+	 * @return bool
+	 */
 	protected function verifyComplete(array $arrayData, array $source_keys)
 	{
 		$complete = true;
@@ -84,6 +98,7 @@ abstract class GenericRecord
 	}
 
 	/**
+	 * Processes the three data values common to both data types
 	 * @param $arrayData
 	 */
 	protected function parseBasicRecordData($arrayData): void
@@ -93,6 +108,10 @@ abstract class GenericRecord
 		$this->location = new Location($arrayData['location']);
 	}
 
+	/**
+	 * Verifies that the decoded record is valid
+	 * @return bool
+	 */
 	protected function validate(): bool
 	{
 		$this->valid = true;
@@ -114,6 +133,11 @@ abstract class GenericRecord
 	}
 
 
+	/**
+	 * Returns the distance between the record and a supplied location
+	 * @param Location $location
+	 * @return float
+	 */
 	public function distanceTo(Location $location): float
 	{
 		$distance = 0.0;
@@ -127,7 +151,11 @@ abstract class GenericRecord
 		return $distance;
 	}
 
-	public function getLocation(): Location
+	/**
+	 * Gets the location of the record
+	 * @return Location
+	 */
+	public function getLocation(): ?Location
 	{
 		return $this->location;
 	}
