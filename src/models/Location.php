@@ -54,7 +54,7 @@ class Location
 	}
 
 	/**
-	 * Returns the distance between the locaton and another
+	 * Returns the distance between the location and another
 	 * @param Location $location
 	 * @return float
 	 */
