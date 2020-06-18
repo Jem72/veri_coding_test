@@ -45,6 +45,11 @@ class CSVReaderTest extends TestCase
 		$this->assertEquals(true, $workplaceLoaded, "Workplace File not opened");
 	}
 
+	/**
+	 * This test is a little contrived as it would fail with any other input date. This could be extended by reading
+	 * the number of lines in the file by another means [perhaps counting newlines] and validating that it was
+	 * consistent.  But for the purposes of this exercise, this will do
+	 */
 	public function testItemCount(): void
 	{
 		$attendanceCount = $this->attendanceReader->getItemCount();

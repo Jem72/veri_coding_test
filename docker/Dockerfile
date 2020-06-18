@@ -17,7 +17,7 @@ RUN apt-get install -y zip unzip
 # install git
 RUN apt-get install -y git
 
-# install composer
+# install composer + prerequisites
 RUN apt-get install -y php-xml
 RUN apt-get install -y php-mbstring
 RUN apt-get install -y curl

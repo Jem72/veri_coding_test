@@ -35,6 +35,11 @@ class VeriCodingTestController
 		$this->workplaceData = array();
 	}
 
+	/**
+	 * Set the name of the attendance file
+	 * @param string $fileName
+	 * @return bool
+	 */
 	public function setAttendanceFile(string $fileName): bool
 	{
 		$ok = false;
@@ -44,7 +49,6 @@ class VeriCodingTestController
 
 		if(null != $reader)
 		{
-			$ok = true;
 			$count = $reader->getItemCount();
 			for($index = 0; $index < $count; $index++)
 			{
@@ -58,12 +62,18 @@ class VeriCodingTestController
 					}
 				}
 			}
+			$ok = $reader->isValid();
 		}
 
 		return $ok;
 	}
 
 
+	/**
+	 * Set teh name of the workpalce file
+	 * @param string $fileName
+	 * @return bool
+	 */
 	public function setWorkplaceFile(string $fileName): bool
 	{
 		$ok = false;
@@ -73,7 +83,6 @@ class VeriCodingTestController
 
 		if(null != $reader)
 		{
-			$ok = true;
 			$count = $reader->getItemCount();
 			for($index = 0; $index < $count; $index++)
 			{
@@ -87,28 +96,38 @@ class VeriCodingTestController
 					}
 				}
 			}
+			$ok = $reader->isValid();
 		}
 
 		return $ok;
 	}
 
+	/**
+	 * Reads a CSV file where the first row contains column names. Returns the reader object or null if the file
+	 * is invalid
+	 * @param string $fileName
+	 * @return ObjectCSVReader|null
+	 */
 	private function loadFile(string $fileName): ?ObjectCSVReader
 	{
-		$attendance = new ObjectCSVReader($fileName);
-		if(false == $attendance->isFileLoaded())
+		$reader = new ObjectCSVReader($fileName);
+		if(false == $reader->isFileLoaded())
 		{
 			Log::get_instance()->error("Failed to load file: " . $fileName);
 			return null;
 		}
-		if(false == $attendance->isValid())
+		if(false == $reader->isValid())
 		{
 			Log::get_instance()->error("Invalid file data: " . $fileName);
 			return null;
 		}
 
-		return $attendance;
+		return $reader;
 	}
 
+	/**
+	 * Executes the processing tasks - works out the total payment for each employee and outputs it to stdio
+	 */
 	public function processData()
 	{
 		Log::get_instance()->info('Process Data');
@@ -122,53 +141,67 @@ class VeriCodingTestController
 		}
 		else
 		{
+			$ok = true;
 			foreach($this->attendanceData as $attendanceRecord)
 			{
-				$this->processAttendanceRecord($attendanceRecord);
+				$ok &= $this->calculateAttendancePayment($attendanceRecord);
 			}
 
-			/** @var Employee[] $employeeData */
-			$employeeData = array();
-			foreach($this->attendanceData as $index => $attendanceRecord)
+			if(false == $ok)
 			{
-				$id = $attendanceRecord->getID();
-				$name = $attendanceRecord->getName();
-				$dob = $attendanceRecord->getDOB();
-				$location = $attendanceRecord->getLocation();
-				$payment = $attendanceRecord->getPaymentValue();
+				print("One or more attendance records couldn't be processed. See log for more details\n");
+				exit;
+			}
+			else
+			{
+				/** @var Employee[] $employeeData */
+				$employeeData = array();
+				foreach($this->attendanceData as $index => $attendanceRecord)
+				{
+					$id = $attendanceRecord->getID();
+					$name = $attendanceRecord->getName();
+					$dob = $attendanceRecord->getDOB();
+					$location = $attendanceRecord->getLocation();
+					$payment = $attendanceRecord->getPaymentValue();
 
-				if(false === array_key_exists($id, $employeeData))
-				{
-					$employee = new Employee($id, $name, $location, $dob, $payment);
-					$employeeData[$id] = $employee;
-				}
-				else
-				{
-					$employee = $employeeData[$id];
-					if(true === $employee->verifyMatch($id, $name, $location, $dob))
+					if(false === array_key_exists($id, $employeeData))
 					{
-						$employee->addPayment($payment);
+						$employee = new Employee($id, $name, $location, $dob, $payment);
+						$employeeData[$id] = $employee;
 					}
 					else
 					{
-						$message = "Employee data mismatch at index: " . $index;
-						Log::get_instance()->error($message);
-						print($message . "\n");
-						exit;
+						$employee = $employeeData[$id];
+						if(true === $employee->verifyMatch($id, $name, $location, $dob))
+						{
+							$employee->addPayment($payment);
+						}
+						else
+						{
+							$message = "Employee data mismatch at index: " . $index;
+							Log::get_instance()->error($message);
+							print($message . "\n");
+							exit;
+						}
 					}
 				}
-			}
-			ksort($employeeData);
+				ksort($employeeData);
 
-			printf("id,payout\n");
-			foreach($employeeData as $index => $datum)
-			{
-				printf("%d, %.02f\n", $datum->getID(), $datum->getPayment());
+				printf("id,payout\n");
+				foreach($employeeData as $index => $datum)
+				{
+					printf("%d, %.02f\n", $datum->getID(), $datum->getPayment());
+				}
 			}
 		}
 	}
 
-	private function getWorkplaceForID(int $id)
+	/**
+	 * Finds the workplace with matching ID
+	 * @param int $id
+	 * @return Workplace|null
+	 */
+	private function getWorkplaceForID(int $id): ?Workplace
 	{
 		$match = null;
 
@@ -183,17 +216,33 @@ class VeriCodingTestController
 		return $match;
 	}
 
-	private function processAttendanceRecord(Attendance $attendance)
+	/**
+	 * Calculates the payment for an attendance record and stores it back into the record
+	 * @param Attendance $attendance
+	 * @return bool - false for failure
+	 */
+	private function calculateAttendancePayment(Attendance $attendance): bool
 	{
 		$workplaceID = $attendance->getWorkplaceID();
 		$workplace = $this->getWorkplaceForID($workplaceID);
 
-		$distance = $attendance->distanceTo($workplace->getLocation());
-		$age = $attendance->getAge();
-		$status = $attendance->getStatus();
+		if(null !== $workplace)
+		{
+			$ok = true;
+			$distance = $attendance->distanceTo($workplace->getLocation());
+			$age = $attendance->getAge();
+			$status = $attendance->getStatus();
 
-		$payment = new Payment($age, $status, $distance);
-		$attendance->setPaymentValue($payment->getTotal());
+			$payment = new Payment($age, $status, $distance);
+			$attendance->setPaymentValue($payment->getTotal());
+		}
+		else
+		{
+			$ok = false;
+			Log::get_instance()->error("Failed to locate workplace for attendance record:" . $attendance->getID());
+		}
+
+		return $ok;
 	}
 
 }

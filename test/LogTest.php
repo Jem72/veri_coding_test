@@ -27,7 +27,7 @@ class LogTest extends TestCase
 		$this->assertInstanceOf("Log", $instance, 'Log instance is the wrong type');
 	}
 
-	public function testCanWriteWrite()
+	public function testCanWriteLogFile()
 	{
 		$oldSize = 0;
 		$fileName = Log::get_instance()->getLogFileName();

@@ -23,8 +23,8 @@ class ObjectCSVReaderTest extends TestCase
 	protected function setUp(): void
 	{
 		Log::get_instance()->disable();
-		$this->attendanceReader = new ObjectCSVReader(__DIR__ . '/../data/attendance.csv');
-		$this->workplaceReader = new ObjectCSVReader(__DIR__ . '/../data/workplaces.csv');
+		$this->attendanceReader = new ObjectCSVReader(dirname(__FILE__,2 ) .'/data/attendance.csv');
+		$this->workplaceReader = new ObjectCSVReader(dirname(__FILE__,2 ) .'/data/workplaces.csv');
 	}
 
 
@@ -40,7 +40,6 @@ class ObjectCSVReaderTest extends TestCase
 	{
 		$attendanceLoaded = $this->attendanceReader->isFileLoaded();
 		$workplaceLoaded = $this->workplaceReader->isFileLoaded();
-		echo("Loaded\n");
 		$this->assertEquals(true, $attendanceLoaded, "Attendance File not opened");
 		$this->assertEquals(true, $workplaceLoaded, "Workplace File not opened");
 	}
@@ -78,5 +77,4 @@ class ObjectCSVReaderTest extends TestCase
 			$this->assertContains($expectedField, $objectFields, 'Could not find workplace field');
 		}
 	}
-
 }
