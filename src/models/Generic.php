@@ -23,6 +23,9 @@ abstract class Generic
 	const MESSAGE_INVALID_ID = "Invalid ID value for record";
 	const MESSAGE_INVALID_NAME = "Invalid Name value for record";
 	const MESSAGE_INVALID_LOCATION = "Invalid Location value for record";
+	protected const ATTRIBUTE_ID = 'id';
+	protected const ATTRIBUTE_NAME = 'name';
+	protected const ATTRIBUTE_LOCATION = 'location';
 
 	protected $failureMessage;
 	protected $id = 0;
@@ -103,9 +106,9 @@ abstract class Generic
 	 */
 	protected function parseBasicRecordData($arrayData): void
 	{
-		$this->id = (int)$arrayData['id'];
-		$this->name = $arrayData['name'];
-		$this->location = new Location($arrayData['location']);
+		$this->id = (int)$arrayData[self::ATTRIBUTE_ID];
+		$this->name = $arrayData[self::ATTRIBUTE_NAME];
+		$this->location = new Location($arrayData[self::ATTRIBUTE_LOCATION]);
 	}
 
 	/**
@@ -140,15 +143,7 @@ abstract class Generic
 	 */
 	public function distanceTo(Location $location): float
 	{
-		$distance = 0.0;
-
-		if(($this->location->isValid()) && ($location->isValid()))
-		{
-			$distance_x = $this->location->x - $location->x;
-			$distance_y = $this->location->y - $location->y;
-			$distance = sqrt(pow($distance_x, 2) + pow($distance_y, 2));
-		}
-		return $distance;
+		return $this->location->distanceTo($location);
 	}
 
 	/**

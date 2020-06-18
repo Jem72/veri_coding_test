@@ -132,6 +132,33 @@ class AttendanceTest extends TestCase
 		{
 			$this->fail('Exception generating age: ' . print_r($e->getMessage()));
 		}
+	}
 
+	public function testDistanceTo()
+	{
+		$testData = $this->standardData;
+
+		$record = new Attendance($testData);
+		$secondLocation = $record->getLocation();
+		$distance = $record->distanceTo($secondLocation);
+
+		$x_offset = clone $secondLocation;
+		$x_offset->x += 5;
+		$x_offset_distance = $record->distanceTo($x_offset);
+
+		$y_offset = clone $secondLocation;
+		$y_offset->y += 5;
+		$y_offset_distance = $record->distanceTo($y_offset);
+
+		$both_offset = clone $secondLocation;
+		$both_offset->x += 5;
+		$both_offset->y += 5;
+		$both_offset_distance = $record->distanceTo($both_offset);
+		$both_offset_expected = 5 * sqrt(2);
+
+		$this->assertEquals(0, $distance, 'Same Location should be zero');
+		$this->assertEquals(5.0, $x_offset_distance, 'X Offset is wrong');
+		$this->assertEquals(5.0, $y_offset_distance, 'Y Offset is wrong');
+		$this->assertEquals($both_offset_expected, $both_offset_distance, 'Both Offset distance is wrong');
 	}
 }

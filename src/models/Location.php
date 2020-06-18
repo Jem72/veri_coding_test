@@ -52,4 +52,22 @@ class Location
 	{
 		return $this->valid;
 	}
+
+	/**
+	 * Returns the distance between the locaton and another
+	 * @param Location $location
+	 * @return float
+	 */
+	public function distanceTo(Location $location): float
+	{
+		$distance = 0.0;
+
+		if(($this->isValid()) && ($location->isValid()))
+		{
+			$distance_x = $this->x - $location->x;
+			$distance_y = $this->y - $location->y;
+			$distance = sqrt(pow($distance_x, 2) + pow($distance_y, 2));
+		}
+		return $distance;
+	}
 }

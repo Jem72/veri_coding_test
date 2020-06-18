@@ -15,6 +15,8 @@ include_once(dirname(__FILE__, 1) . '/models/Location.php');
 include_once(dirname(__FILE__, 1) . '/models/Attendance.php');
 /** @noinspection PhpIncludeInspection */
 include_once(dirname(__FILE__, 1) . '/models/Workplace.php');
+/** @noinspection PhpIncludeInspection */
+include_once(dirname(__FILE__, 1) . '/models/Employee.php');
 
 /**
  * Class VeriCodingTestController
@@ -125,29 +127,43 @@ class VeriCodingTestController
 				$this->processAttendanceRecord($attendanceRecord);
 			}
 
-			$consolidatedData = array();
-			foreach($this->attendanceData as $attendanceRecord)
+			/** @var Employee[] $employeeData */
+			$employeeData = array();
+			foreach($this->attendanceData as $index => $attendanceRecord)
 			{
-				$recordID = $attendanceRecord->getID();
-				if(false === array_key_exists($recordID, $consolidatedData))
+				$id = $attendanceRecord->getID();
+				$name = $attendanceRecord->getName();
+				$dob = $attendanceRecord->getDOB();
+				$location = $attendanceRecord->getLocation();
+				$payment = $attendanceRecord->getPaymentValue();
+
+				if(false === array_key_exists($id, $employeeData))
 				{
-					$consolidatedData[$recordID] = array('id' => $recordID);
-					$consolidatedData[$recordID]['name'] = $attendanceRecord->getName();
-					$consolidatedData[$recordID]['payment'] = $attendanceRecord->getPaymentValue();
-					$consolidatedData[$recordID]['count'] = 1;
+					$employee = new Employee($id, $name, $location, $dob, $payment);
+					$employeeData[$id] = $employee;
 				}
 				else
 				{
-					$consolidatedData[$recordID]['payment'] += $attendanceRecord->getPaymentValue();
-					$consolidatedData[$recordID]['count']++;
+					$employee = $employeeData[$id];
+					if(true === $employee->verifyMatch($id, $name, $location, $dob))
+					{
+						$employee->addPayment($payment);
+					}
+					else
+					{
+						$message = "Employee data mismatch at index: " . $index;
+						Log::get_instance()->error($message);
+						print($message . "\n");
+						exit;
+					}
 				}
 			}
+			ksort($employeeData);
 
-			ksort($consolidatedData);
 			printf("id,payout\n");
-			foreach($consolidatedData as $datum)
+			foreach($employeeData as $index => $datum)
 			{
-				printf("%d, %.02f\n", $datum['id'], $datum['payment']);
+				printf("%d, %.02f\n", $datum->getID(), $datum->getPayment());
 			}
 		}
 	}

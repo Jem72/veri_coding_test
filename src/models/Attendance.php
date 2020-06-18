@@ -21,7 +21,11 @@ include_once(dirname(__FILE__) . '/Payment.php');
  */
 class Attendance extends Generic
 {
-	private static $source_keys = array('id', 'name', 'location', 'dob', 'workplace_id', 'status');
+	const ATTRIBUTE_WORKPLACE_ID = 'workplace_id';
+	const ATTRIBUTE_DOB = 'dob';
+	const ATTRIBUTE_STATUS = 'status';
+	private static $source_keys = array(self::ATTRIBUTE_ID, self::ATTRIBUTE_NAME, self::ATTRIBUTE_LOCATION,
+													self::ATTRIBUTE_DOB, self::ATTRIBUTE_WORKPLACE_ID, self::ATTRIBUTE_STATUS);
 
 	const MESSAGE_INVALID_DOB = "Invalid DOB value for record";
 	const MESSAGE_INVALID_WORKPLACE_ID = "Invalid Workplace ID value for record";
@@ -42,16 +46,16 @@ class Attendance extends Generic
 		{
 			$this->parseBasicRecordData($arrayData);
 
-			$this->workplace_id = $arrayData['workplace_id'];
+			$this->workplace_id = $arrayData[self::ATTRIBUTE_WORKPLACE_ID];
 			try
 			{
-				$this->dob = new DateTime($arrayData['dob']);
+				$this->dob = new DateTime($arrayData[self::ATTRIBUTE_DOB]);
 			}
 			catch(Exception $e)
 			{
 				$this->dob = null;
 			}
-			$this->status = $arrayData['status'];
+			$this->status = $arrayData[self::ATTRIBUTE_STATUS];
 			$this->validate();
 		}
 	}
@@ -108,9 +112,22 @@ class Attendance extends Generic
 		return $this->workplace_id;
 	}
 
+	/**
+	 * Get the attendance status
+	 * @return string
+	 */
 	public function getStatus()
 	{
 		return $this->status;
+	}
+
+	/**
+	 * Get the employees data of birth
+	 * @return DateTime|null
+	 */
+	public function getDOB(): ?DateTime
+	{
+		return $this->dob;
 	}
 
 	/**
@@ -123,11 +140,12 @@ class Attendance extends Generic
 	}
 
 	/**
-	 * We round the payment value to the nearest penny - There is an assu,
+	 * We round the payment value to the nearest penny - There is an assumption that we round this to 2 decimal places,
 	 * @return float
 	 */
 	public function getPaymentValue(): float
 	{
 		return round($this->paymentValue, 2);
 	}
+
 }
