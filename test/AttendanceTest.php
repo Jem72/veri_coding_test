@@ -15,12 +15,15 @@ include_once(dirname(__FILE__, 2) . '/src/models/Location.php');
 /** @noinspection PhpIncludeInspection */
 include_once(dirname(__FILE__, 2) . '/src/Log.php');
 
-Log::get_instance()->disable();
-
 class AttendanceTest extends TestCase
 {
 	private $standardData = array('id' => '3', 'name' => 'Lisa Paul', 'location' => '(7, 17)', 'dob' => '1972-04-20',
 											'workplace_id' => '7', 'status' => 'AL');
+
+	protected function setUp(): void
+	{
+		Log::get_instance()->disable();
+	}
 
 	public function testValidRecord(): void
 	{

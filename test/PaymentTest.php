@@ -13,6 +13,11 @@ use PHPUnit\Framework\TestCase;
 
 class PaymentTest extends TestCase
 {
+	protected function setUp(): void
+	{
+		Log::get_instance()->disable();
+	}
+
 	function testAgeBasicPayments(): void
 	{
 		$payment1 = new Payment(14, 'AT', 0);

@@ -21,6 +21,11 @@ class Log
 		$this->log_file = dirname(__FILE__,2) . '/log/coding-test.log';
 	}
 
+	public function getLogFileName()
+	{
+		return $this->log_file;
+	}
+
 	/**
 	 * @return Log
 	 */
@@ -79,15 +84,16 @@ class Log
 				fwrite($file, $message);
 				fclose($file);
 			}
-			else
-			{
-				print("FAILED TO OPEN LOG FILE: " . $this->log_file);
-			}
 		}
 	}
 
 	public function disable()
 	{
 		$this->enabled = false;
+	}
+
+	public function enable()
+	{
+		$this->enabled = true;
 	}
 }

@@ -12,6 +12,11 @@ include_once(dirname(__FILE__, 2) . '/src/models/Location.php');
 
 class LocationTest extends TestCase
 {
+	protected function setUp(): void
+	{
+		Log::get_instance()->disable();
+	}
+
 	function testValidString(): void
 	{
 		$location = new Location("(2, 42)");

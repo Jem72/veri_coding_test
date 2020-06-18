@@ -10,6 +10,16 @@ that the payment is made if and only if employee is attending the office
 1. After updating the code, run composer update to install any dependencies
 
 **Running**
-1. Execute the code from the root using php src/index.php
-2. Run the tests from the test directory using ../vendor/bin/phpunit .
+1. Execute the code from the root using "*php src/index.php*"
+2. Run the tests from the test directory using "*../vendor/bin/phpunit .*"
 3. Logged data is in log/coding-test.log. If this file hasn't been created check the directory permissions
+
+**Docker**
+1. Build by running "*docker-compose build*" in the root directory
+2. Start by running "*docker-compose up -d*" in the root directory
+3. The container is in tty mode so you can log in using "*docker exec -it veri_test bash*"
+4. The working directory on the docker container is "*/etc/veri_coding_test*"
+
+**Output**
+1. Log file data is saved to "*log/coding-test.log*". If the process does not have permission to access this directory, 
+it carries on with no logging and no warning is given. 

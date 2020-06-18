@@ -25,6 +25,7 @@ class EmployeeTest extends TestCase
 
 	public function setUp(): void
 	{
+		Log::get_instance()->disable();
 		$this->testID = 55;
 		$this->testName = "Test Record";
 		$this->testLocation = new Location("(6, 7)");

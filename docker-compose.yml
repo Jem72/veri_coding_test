@@ -1,0 +1,9 @@
+version: "2"
+
+services:
+  php:
+    container_name: veri_test
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile
+    tty: true

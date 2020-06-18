@@ -15,10 +15,13 @@ include_once(dirname(__FILE__, 2) . '/src/models/Location.php');
 /** @noinspection PhpIncludeInspection */
 include_once(dirname(__FILE__, 2) . '/src/Log.php');
 
-Log::get_instance()->disable();
-
 class WorkplaceTest extends TestCase
 {
+	protected function setUp(): void
+	{
+		Log::get_instance()->disable();
+	}
+
 	private $standardData = array('id' => '10', 'name' => 'Walker, Johnson and Knight', 'location' => '(22, 23)');
 
 	public function testValidRecord(): void
